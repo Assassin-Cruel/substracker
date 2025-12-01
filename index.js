@@ -2430,9 +2430,10 @@ const lunarBiz = {
         const day = Number(match[3]);
         const parsed = new Date(year, month - 1, day);
         if (isNaN(parsed.getTime()) || parsed.getFullYear() !== year || parsed.getMonth() !== month - 1 || parsed.getDate() !== day) {
-          if (typeof showToast === 'function') {
-            showToast('请输入有效的日期', 'warning');
-          }
+          // if (typeof showToast === 'function') {
+          //   showToast('请输入有效的日期', 'warning');
+          // }
+		  console.log('无效的日期数值，跳过日历视图同步');
           return;
         }
 
@@ -2440,8 +2441,9 @@ const lunarBiz = {
         this.currentDate = new Date(parsed);
         this.render();
 
-        const event = new Event('change', { bubbles: false });
-        this.input.dispatchEvent(event);
+        // 这里的 dispatchEvent 可能会导致递归调用或其他副作用，如果仅用于同步UI，通常不需要触发 change
+        // const event = new Event('change', { bubbles: false });
+        // this.input.dispatchEvent(event);
       }
       
       render() {
@@ -2810,12 +2812,12 @@ const lunarBiz = {
       document.getElementById('subscriptionModal').classList.add('hidden');
     });
     
-    // 禁止点击弹窗外区域关闭弹窗，防止误操作丢失内容
-    // document.getElementById('subscriptionModal').addEventListener('click', (event) => {
-    //   if (event.target === document.getElementById('subscriptionModal')) {
-    //     document.getElementById('subscriptionModal').classList.add('hidden');
-    //   }
-    // });
+    // 允许点击弹窗外区域关闭弹窗
+    document.getElementById('subscriptionModal').addEventListener('click', (event) => {
+      if (event.target === document.getElementById('subscriptionModal')) {
+        document.getElementById('subscriptionModal').classList.add('hidden');
+      }
+    });
     
 	
 	// 4. 新增修改，监听 useLunar 复选框变化时也自动重新计算
